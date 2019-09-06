@@ -1,22 +1,12 @@
 
-ICONS = {
-	"INFO": '<svg fill="var(--info)" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"><path d="M0 0h24v24H0z" fill="none"/><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-6h2v6zm0-8h-2V7h2v2z"/></svg>',
-	"ERR": '<svg fill="var(--error)" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"><path d="M0 0h24v24H0z" fill="none"/><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-2h2v2zm0-4h-2V7h2v6z"/></svg>',
-	"WARN": '<svg fill="var(--warning)" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"><path d="M0 0h24v24H0z" fill="none"/><path d="M1 21h22L12 2 1 21zm12-3h-2v-2h2v2zm0-4h-2v-4h2v4z"/></svg>',
-	"TASK": '<svg fill="var(--done)" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"><path fill="none" d="M0 0h24v24H0z"/><path d="M9 16.2L4.8 12l-1.4 1.4L9 19 21 7l-1.4-1.4L9 16.2z"/></svg>',
-	"TASK_PARENT": '<svg fill="var(--done)" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"><path d="M0 0h24v24H0z" fill="none"/><path d="M18 7l-1.41-1.41-6.34 6.34 1.41 1.41L18 7zm4.24-1.41L11.66 16.17 7.48 12l-1.41 1.41L11.66 19l12-12-1.42-1.41zM.41 13.41L6 19l1.41-1.41L1.83 12 .41 13.41z"/></svg>',
-	"WAITING": '<div class="waiting"></div>',
-	"RUNNING": '<div class="loader"></div>',
-}
 
-
-class DOMConstructor {
+class RecordConstructor {
 	constructor(id_base) {
 		this.id_base = id_base;
 	}
-	makeDiv(parent, type, classname) {
+	makeDiv(parent, type) {
 		var div = document.createElement("div");
-		div.className = classname;
+		div.className = "record-" + type;
 		div.setAttribute("id", this.id_base + "-" + type);
 		parent.appendChild(div);
 
@@ -42,17 +32,54 @@ class Program {
 	}
 
 	/**
-	 * Check for progress recompute
+	 * @typedef ProgramRecord
+	 * @type {Object}
+	 * @property {str} node_id - ID of originating compute node
+	 * @property {str} record_id - ID of record
+	 * @property {str} parent - ID of record parent
+	 * @property {str} name - Record name
+	 * @property {str} desc - Record description
+	 * @property {str} type - Record type; TASK|ERR|WARN|INFO|META
+	 * @property {str} start - Record start datetime; formatting TBD
+	 * @property {str} end - Record end datetime; formatting TBD
+	 * @property {Object} meta - metadata object
 	 */
-	checkProgress(data) {
+
+	/**
+	 * Check for progress recompute
+	 * @param {ProgramRecord} record - single record
+	 */
+	checkProgress(record) {
 		var is_progress_update = (
-			(data.type == 'TASK') &&
-			(("progress" in data) || ("end" in data)));
+			(record.type == 'TASK') &&
+			(("progress" in record) || ("end" in record)));
 		if(is_progress_update) { this.recompute_progress = true; }
 	}
 
-	updateRecords(data) {
-		for(var record of data) { this.updateRecord(record); }
+	/**
+	 * Add a single new record
+	 * @param {ProgramRecord} data - single record
+	 */
+	updateRecord(record) {
+		// Record already exists
+		if(record.record_id in this.records) {
+			for(var key of Object.keys(record)) {
+				this.records[record.record_id][key] = record[key];
+			}
+		}
+		// New record
+		else { this.records[record.record_id] = record; }
+
+		// Check if progress recompute is necessary
+		this.checkProgress(record);
+	}
+
+	/**
+	 * Update records
+	 * @param {ProgramRecord[]} records - list of records to update
+	 */
+	updateRecords(records) {
+		for(var record of records) { this.updateRecord(record); }
 
 		if(this.recompute_progress) {
 			this.computeProgress();
@@ -61,26 +88,7 @@ class Program {
 	}
 
 	/**
-	 * Update Record
-	 */
-	updateRecord(data) {
-
-		// Record already exists
-		if(data.record_id in this.records) {
-			for(var key of Object.keys(data)) {
-				this.records[data.record_id][key] = data[key];
-			}
-		}
-		// New record
-		else {
-			this.records[data.record_id] = data;
-		}
-		// Check if progress recompute is necessary
-		this.checkProgress(data);
-	}
-
-	/**
-	 * Compute progress
+	 * Compute progress for all stored records
 	 */
 	computeProgress() {
 		this.progress = {};
@@ -102,21 +110,29 @@ class Program {
 
 	/**
 	 * Check if container exists
+	 * @param {str} id - record ID to check
+	 * @return {Object} Fetched element. Check null the same way as a boolean.
 	 */
 	exists(id) {
 		return document.getElementById(id + '-children');
 	}
 
 	/**
-	 * Update element
+	 * Update element; only redraws if the values change (in case more complex
+	 * HTML is involved such as animations)
+	 * @param {str} id - record ID to check
+	 * @param {str} key - ProgramRecord key to update
 	 */
 	updateElem(id, key) {
 		var tgt = document.getElementById(id + '-' + key);
-		tgt.innerHTML = this.records[id][key];
+		var new_val = this.records[id][key];
+		if(tgt.innerHTML != new_val) { tgt.innerHTML = new_val; }
 	}
 
 	/**
 	 * Get progress
+	 * @param {str} id - record ID to check
+	 * @return {number} Progress, in [0, 1]
 	 */
 	getProgress(id) {
 		// Has end time -> 1
@@ -131,22 +147,26 @@ class Program {
 
 	/** 
 	 * Update progress bar
+	 * @param {str} id - record ID to update progress for
 	 */
 	updateProgress(id) {
 		var progress = this.getProgress(id) * 100 + "%"
 
+		// Fetch progress bar; return immediately if does not exist
 		var pbar = document.getElementById(id + '-progress-done');
+		if(!pbar) { return; }
 		pbar.style.width = progress;
 		
+		// Update progress text
 		var ptext = document.getElementById(id + "-progress-text");
 		var complete = (id in this.progress ? this.progress[id] : 0);
 		var total = (id in this.totals ? this.totals[id] : 0);
-
 		ptext.innerHTML = progress + " [" + complete + "/" + total + "]";
 	}
 
 	/**
 	 * Update record icon
+	 * @param {str} id - record to update icon for
 	 */
 	updateIcon(id) {
 		var data = this.records[id];
@@ -157,10 +177,45 @@ class Program {
 		else if(this.totals[id] > 0) { icon_name = 'TASK_PARENT'; }
 		else { icon_name = data.type; }
 
-		var icon = document.getElementById(id + '-name-icon');
+		var icon = document.getElementById(id + '-icon');
 		if(icon.innerHTML != ICONS[icon_name]) {
 			icon.innerHTML = ICONS[icon_name]
 		};
+	}
+
+	/**
+	 * Create new record
+	 * @param {ProgramRecord} record - record to create
+	 */
+	createRecordDiv(record) {
+
+		// Draw
+		var c = new RecordConstructor(record.record_id);
+		var parent = document.getElementById(record.parent + "-children");
+
+		var container = c.makeDiv(parent, "container");
+		var button = c.makeDiv(container, "collapse");
+		var content = c.makeDiv(container, "content");
+		var metadata = c.makeDiv(content, "metadata");
+		var header = c.makeDiv(metadata, "header");
+		c.makeDiv(header, "icon");
+		c.makeDiv(header, "name");
+		c.makeDiv(header, "progress-text");
+		var children = c.makeDiv(content, "children");
+		c.makeDiv(children, "desc");
+
+		// Collapse button
+		button.appendChild(document.createTextNode("-"));
+		button.addEventListener("click", function() {
+			this.innerHTML = (this.innerHTML == "+" ? "-" : "+");
+			toggle(record.record_id + "-children");
+		});
+
+		// Progress bar (if task)
+		if(record.type == 'TASK') {
+			var progress = c.makeDiv(metadata, "progress");
+			var pbar = c.makeDiv(progress, "progress-done");
+		}
 	}
 
 	/**
@@ -170,42 +225,15 @@ class Program {
 
 		var data = this.records[id];
 
+		// Record isn't drawn -> create new
 		if(!this.exists(id)) {
 			// Make sure parent exists
 			if(!this.exists(data.parent)) { this.drawUpdate(data.parent); }
-
-			// Draw
-			var c = new DOMConstructor(data.record_id);
-			var parent = document.getElementById(data.parent + "-children");
-
-			var container = c.makeDiv(parent, "container", "record");
-
-			// Collapse button
-			var button = c.makeDiv(container, "collapse", "button-collapse");
-			button.appendChild(document.createTextNode("-"));
-			button.addEventListener("click", function() {
-				this.innerHTML = (this.innerHTML == "+" ? "-" : "+");
-				toggle(data.record_id + "-children");
-			});
-
-			var content = c.makeDiv(container, "content", "content-block");
-			var metadata = c.makeDiv(content, "metadata", "metadata-block");
-			var name_ctr = c.makeDiv(metadata, "name-ctr", "metadata-name");
-			var name_icon = c.makeDiv(name_ctr, "name-icon", "metadata-icon");
-			var name = c.makeDiv(name_ctr, "name", "metadata-name-text");
-			var progress_percent = c.makeDiv(name_ctr, "progress-text", "progress-text");
-
-			// Progress bar (if task)
-			if(data.type == 'TASK') {
-				var progress = c.makeDiv(metadata, "progress", "progress");
-				var pbar = c.makeDiv(progress, "progress-done", "progress-done");
-			}
-
-			var children = c.makeDiv(content, "children", "children-block");
-			var desc = c.makeDiv(children, "desc", "metadata-desc");
-
+			// Create record div
+			this.createRecordDiv(data);
 		}
 
+		// Update elements
 		this.updateElem(id, 'name');
 		this.updateElem(id, 'desc');
 

@@ -1,0 +1,22 @@
+
+/*
+ * Loading icon & Waiting icon
+ */
+.loader, .waiting {
+  	border-radius: 50%;
+  	width: 8px;
+  	height: 8px;
+    display: inline-block;
+}
+.loader {
+  	border: 3px solid var(--dark);
+  	border-top: 3px solid var(--highlight);
+  	animation: spin 2s linear infinite;
+}
+.waiting {
+	border: 3px solid var(--highlight);
+}
+@keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}

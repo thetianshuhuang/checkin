@@ -111,33 +111,33 @@ hr {
 /*
  * Record
  */
-.record {
+.record-container {
 	margin: 8px 0px 0px 0px;
 	/* border: 1px solid var(--border); */
 	display: flex;
 }
 
 
-.content-block {
+.record-content {
 	width: 100%;
 	margin: 0px 0px 0px 8px;
 }
 
 
-.metadata-block {
+.record-metadata {
 }
 
-.children-block {
+.record-children {
 }
 
-.metadata-name {
+.record-header {
 	font-size: 18px;
 	position: relative;
 }
-.metadata-name-text {
+.record-name {
 	display: inline-block;
 }
-.progress-text {
+.record-progress-text {
 	display: inline-block;
 	margin: 2px;
 	font-size: 12px;
@@ -145,63 +145,41 @@ hr {
 	right: 0px;
 	bottom: 0px;
 }
-.metadata-desc {
+.record-desc {
 	font-size: 12px;
 }
-.metadata-icon {
+.record-icon {
 	display: inline-block;
 	vertical-align: middle;
 	padding-right: 4px;
 }
-.metadata-icon > svg {
+.record-icon > svg {
 	width: var(--icon-size);
 	height: var(--icon-size);
 }
 
 
 
-.progress, .progress-done {
+.record-progress, .record-progress-done {
 	height: 5px;
 	margin: 0px;
 	font-size: 8px;
 }
-.progress {
+.record-progress {
 	background-color: var(--dark);
 	width: 100%;
 }
-.progress-done {
+.record-progress-done {
 	background-color: var(--highlight);
 	width: 0%;
 }
 
 
 /*
- * Icon
- */
-.loader, .waiting {
-  	border-radius: 50%;
-  	width: 8px;
-  	height: 8px;
-    display: inline-block;
-}
-.loader {
-  	border: 3px solid var(--dark);
-  	border-top: 3px solid var(--highlight);
-  	animation: spin 2s linear infinite;
-}
-.waiting {
-	border: 3px solid var(--highlight);
-}
-@keyframes spin {
-    0% { transform: rotate(0deg); }
-    100% { transform: rotate(360deg); }
-}
-
-/*
  * Buttons
  */
 
-.button, .button-collapse {
+.button, .record-collapse {
 	border: none;
 	display: inline-block;
 	vertical-align: middle;
@@ -219,15 +197,15 @@ hr {
     text-align: center;
 	white-space: normal;
 }
-.button:hover, .button-collapse:hover {
+.button:hover, .record-collapse:hover {
 	color: var(--heading-text);
 	background-color: var(--highlight) !important;
 }
-.button:disabled, .button-collapse:disabled {
+.button:disabled, .record-collapse:disabled {
 	cursor: not-allowed;
 	opacity: 0.3;
 }
-.button-collapse {
+.record-collapse {
 	background-color: var(--dark);
 	color: var(--light);
 	margin: 0px;
