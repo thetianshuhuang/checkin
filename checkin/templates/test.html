@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html>
+
+<link rel="stylesheet" href="/static/style.css">
+<script src="/static/test.js"></script>
+
+<head>
+</head>
+<meta name="viewport" content= "width=device-width, initial-scale=1.0"> 
+<body>
+	<div style="height: 20px"></div>
+	<div id="root-children" class="project">
+	</div>
+
+</body>
+
+<script>
+
+var TEST_DATA = [
+	{
+		"program": "12345678-1234-1234",
+		"name": "Program Name",
+		"desc": "Program description",
+		"start": 12345,
+		"end": null,
+		"record_id": "program",
+		"parent": "root",
+		"type": "TASK"
+	},
+	{
+		"record_id": "11",
+		"name": "Test Parent",
+		"desc": "Test description",
+		"node_id": "00",
+		"type": "TASK",
+		"start": 12345,
+		"end": null,
+		"meta": null,
+		"parent": "program"
+	},
+	{
+		"record_id": "12",
+		"name": "Test Info",
+		"desc": "Info description",
+		"node_id": "00",
+		"type": "INFO",
+		"start": 12345,
+		"end": 12345,
+		"meta": null,
+		"parent": "11",
+	},
+	{
+		"record_id": "19",
+		"name": "Test Warning",
+		"desc": "Warning metadata and information",
+		"node_id": "00",
+		"type": "WARN",
+		"start": 12345,
+		"end": 12345,
+		"meta": null,
+		"parent": "11",
+	},
+	{
+		"record_id": "13",
+		"name": "Test Error",
+		"desc": "Error traceback\netc",
+		"node_id": "00",
+		"type": "ERR",
+		"start": 12345,
+		"end": 12345,
+		"meta": null,
+		"parent": "14",
+	},
+	{
+		"record_id": "14",
+		"name": "Queued Task",
+		"desc": "This task is not yet running.",
+		"node_id": "00",
+		"type": "TASK",
+		"start": null,
+		"end": null,
+		"meta": null,
+		"parent": "program",
+	},
+	{
+		"record_id": "11",
+		"end": 12345,
+	},
+	/* {
+		"record_id": "14",
+		"start": 12345
+	} */
+]
+
+
+var program = new Program("root");
+
+program.updateRecords(TEST_DATA);
+
+</script>
+
+</html>

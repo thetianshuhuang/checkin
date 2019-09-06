@@ -6,7 +6,7 @@ class Program(models.Model):
     """Program; consists of a set of records."""
 
     # Owner (user)
-    owner = models.ForeignKey(User, on_delete=models.SET_NULL)
+    owner = models.ForeignKey(User, on_delete=models.SET_NULL, null=True)
 
     # Access token (for APIs)
     api_token = models.TextField()
@@ -14,9 +14,9 @@ class Program(models.Model):
     share_token = models.TextField()
 
     # Start time; NULL if not started
-    start = models.DateTime()
+    start = models.DateTimeField(null=True)
     # End time; NULL if not done
-    end = models.DateTime()
+    end = models.DateTimeField(null=True)
 
 
 class RunNodes(models.Model):
@@ -57,10 +57,10 @@ class Record(models.Model):
     type = models.CharField(max_length=10)
 
     # Start Time; NULL if task not started
-    start = models.DateTimeField()
+    start = models.DateTimeField(null=True)
 
     # End Time; NULL if task not complete
-    end = models.DateTimeField()
+    end = models.DateTimeField(null=True)
 
     # Additional metadata (JSON)
     meta = models.TextField()

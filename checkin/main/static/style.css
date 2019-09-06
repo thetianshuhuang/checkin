@@ -1,0 +1,237 @@
+
+/*
+ * Main Settings
+ */
+:root {
+	--bold: 700;
+	--semi-bold: 600;
+	--normal: 400;
+	--font: 'Open Sans', sans-serif;
+	--icon-size: 16px;
+}
+
+html, body{
+	font-family: var(--font);
+	font-size: 15px;
+	line-height: 1.5;
+	color: var(--dark);
+	background-color: var(--background);
+	width: 100%;
+	margin: 0;
+}
+ul li {
+	white-space: normal;
+}
+img {
+	width: 100%;
+	vertical-align: middle;
+}
+a {
+	color: inherit;
+	background-color: transparent;
+	-webkit-text-decoration-skip: objects;
+}
+a:active, a:hover {
+	outline-width:0
+}
+h1{font-size:36px}
+h2{font-size:30px}
+h3{font-size:24px}
+h4{font-size:20px}
+h5{font-size:18px}
+h6{font-size:16px}
+h1,h2,h3,h4,h5,h6{
+	font-family: "Segoe UI", Arial, sans-serif;
+	font-weight: var(--normal);
+	margin: 10px 0;
+}
+
+hr {
+	border-top: 1px solid var(--dark);
+	margin: 20px 10%;
+}
+
+/*
+ * Color Theme
+ */
+:root {
+	--dark: #000;
+	--highlight: #005cf1;
+	--light: #fff;
+
+	--header: #000;
+	--header-text: #fff;
+	--heading-text: #fff;
+	--background: #f3f3f3;
+	--border: #000;
+
+	--highlight-tl: rgba(0, 92, 241, 0.8);
+	--light-tl: rgba(255, 255, 255, 0.8);
+
+	--item-shadow: 0 2px 5px 0 rgba(0,0,0,0.16),0 2px 10px 0 rgba(0,0,0,0.12);
+	--header-shadow: 0 4px 8px 0 rgba(0,0,0,0.16),0 2px 10px 0 rgba(0,0,0,0.12);
+
+	--warning: #ffcc00;
+	--error: #ff3300;
+	--info: #005cf1;
+	--done: #00cc00;
+}
+[data-theme="dark"] {
+	--dark: #f3f3f3;
+	--highlight: #256bdb;
+	--light: #26282b;
+
+	--header: #000;
+	--header-text: #f3f3f3;
+	--heading-text: #f3f3f3;
+	--background: #394346;
+	--border: #000;
+
+	--highlight-tl: rgba(95, 133, 219, 0.8);
+	--light-tl: rgba(38, 40, 43, 0.8);
+
+	--item-shadow: 0 2px 5px 0 rgba(0,0,0,0.4),0 2px 10px 0 rgba(0,0,0,0.3);
+	--header-shadow: 0 4px 8px 0 rgba(0,0,0,0.4),0 2px 10px 0 rgba(0,0,0,0.3);
+}
+
+
+/*
+ * Project
+ */
+.project {
+	padding: 8px 16px 16px 8px;
+	box-shadow: var(--header-shadow);
+	background-color: var(--light);
+	width: 90vw;
+	margin: auto;
+	max-width: 800px;
+}
+
+
+/*
+ * Record
+ */
+.record {
+	margin: 8px 0px 0px 0px;
+	/* border: 1px solid var(--border); */
+	display: flex;
+}
+
+
+.content-block {
+	width: 100%;
+	margin: 0px 0px 0px 8px;
+}
+
+
+.metadata-block {
+}
+
+.children-block {
+}
+
+.metadata-name {
+	font-size: 18px;
+	position: relative;
+}
+.metadata-name-text {
+	display: inline-block;
+}
+.progress-text {
+	display: inline-block;
+	margin: 2px;
+	font-size: 12px;
+	position: absolute;
+	right: 0px;
+	bottom: 0px;
+}
+.metadata-desc {
+	font-size: 12px;
+}
+.metadata-icon {
+	display: inline-block;
+	vertical-align: middle;
+	padding-right: 4px;
+}
+.metadata-icon > svg {
+	width: var(--icon-size);
+	height: var(--icon-size);
+}
+
+
+
+.progress, .progress-done {
+	height: 5px;
+	margin: 0px;
+	font-size: 8px;
+}
+.progress {
+	background-color: var(--dark);
+	width: 100%;
+}
+.progress-done {
+	background-color: var(--highlight);
+	width: 0%;
+}
+
+
+/*
+ * Icon
+ */
+.loader, .waiting {
+  	border-radius: 50%;
+  	width: 8px;
+  	height: 8px;
+    display: inline-block;
+}
+.loader {
+  	border: 3px solid var(--dark);
+  	border-top: 3px solid var(--highlight);
+  	animation: spin 2s linear infinite;
+}
+.waiting {
+	border: 3px solid var(--highlight);
+}
+@keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}
+
+/*
+ * Buttons
+ */
+
+.button, .button-collapse {
+	border: none;
+	display: inline-block;
+	vertical-align: middle;
+	overflow: hidden;
+	text-decoration: none;
+	color: inherit;
+	background-color: inherit;
+	cursor: pointer;
+    -webkit-touch-callout: none;
+    -webkit-user-select: none;
+    -khtml-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+    text-align: center;
+	white-space: normal;
+}
+.button:hover, .button-collapse:hover {
+	color: var(--heading-text);
+	background-color: var(--highlight) !important;
+}
+.button:disabled, .button-collapse:disabled {
+	cursor: not-allowed;
+	opacity: 0.3;
+}
+.button-collapse {
+	background-color: var(--dark);
+	color: var(--light);
+	margin: 0px;
+	width: 8px;
+	padding: 0px;
+	font-size: 10px;
+}

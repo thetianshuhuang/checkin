@@ -29,7 +29,7 @@ POST with JSON
             "type": <TASK|ERR|WARN|INFO|META>,
             "start": <datetime>,
             "end": <datetime>,
-            "meta": <json>
+            "meta": <json>,
         },
         ...
     ]
@@ -63,9 +63,13 @@ Return JSON
 -----------
 {
     "program": <id>,
+    "name": <str>,
+    "desc": <str>,
     "start": <datetime|null>,
     "end": <datetime|null>,
-    "data": [
+    "record_id": "00000000-0000-0000-0000-000000000000",
+    "type": "TASK",
+    "children": [
         {
             "record_id": <uuid>,
             "name": <str>,
@@ -75,6 +79,7 @@ Return JSON
             "start": <datetime|null>,
             "end": <datetime|null>,
             "meta": <json>,
+            "progress": <float|null>,
             "children": [
                 {
                     ...
