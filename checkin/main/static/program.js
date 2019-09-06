@@ -40,8 +40,8 @@ class Program {
 	 * @property {str} name - Record name
 	 * @property {str} desc - Record description
 	 * @property {str} type - Record type; TASK|ERR|WARN|INFO|META
-	 * @property {str} start - Record start datetime; formatting TBD
-	 * @property {str} end - Record end datetime; formatting TBD
+	 * @property {number} start - Record start datetime; POSIX time
+	 * @property {number} end - Record end datetime; POSIX time
 	 * @property {Object} meta - metadata object
 	 */
 
@@ -58,7 +58,7 @@ class Program {
 
 	/**
 	 * Add a single new record
-	 * @param {ProgramRecord} data - single record
+	 * @param {ProgramRecord} record - single record
 	 */
 	updateRecord(record) {
 		// Record already exists
@@ -95,14 +95,14 @@ class Program {
 		this.totals = {};
 
 		for(var id of Object.keys(this.records)) {
-			var data = this.records[id];
-			if(data.type == 'TASK') {
-				var p = data.parent;
+			var record = this.records[id];
+			if(record.type == 'TASK') {
+				var p = record.parent;
 
 				if(!(p in this.totals)) { this.totals[p] = 0; }
 				if(!(p in this.progress)) { this.progress[p] = 0; }
 
-				if(data.end) { this.progress[p] += 1; }
+				if(record.end) { this.progress[p] += 1; }
 				this.totals[p] += 1;
 			}
 		}
@@ -169,13 +169,13 @@ class Program {
 	 * @param {str} id - record to update icon for
 	 */
 	updateIcon(id) {
-		var data = this.records[id];
+		var record = this.records[id];
 
 		var icon_name;
-		if(!data.start) { icon_name = 'WAITING'; }
-		else if(!data.end) { icon_name = 'RUNNING'; }
+		if(!record.start) { icon_name = 'WAITING'; }
+		else if(!record.end) { icon_name = 'RUNNING'; }
 		else if(this.totals[id] > 0) { icon_name = 'TASK_PARENT'; }
-		else { icon_name = data.type; }
+		else { icon_name = record.type; }
 
 		var icon = document.getElementById(id + '-icon');
 		if(icon.innerHTML != ICONS[icon_name]) {
@@ -223,14 +223,14 @@ class Program {
 	 */
 	drawUpdate(id) {
 
-		var data = this.records[id];
+		var record = this.records[id];
 
 		// Record isn't drawn -> create new
 		if(!this.exists(id)) {
 			// Make sure parent exists
-			if(!this.exists(data.parent)) { this.drawUpdate(data.parent); }
+			if(!this.exists(record.parent)) { this.drawUpdate(record.parent); }
 			// Create record div
-			this.createRecordDiv(data);
+			this.createRecordDiv(record);
 		}
 
 		// Update elements
@@ -239,7 +239,7 @@ class Program {
 
 		this.updateIcon(id);
 
-		if(data.type == 'TASK') {
+		if(record.type == 'TASK') {
 			this.updateProgress(id);
 		}
 	}

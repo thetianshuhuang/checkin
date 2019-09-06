@@ -99,7 +99,7 @@ hr {
  * Project
  */
 .project {
-	padding: 8px 16px 16px 8px;
+	padding: 8px 16px 16px 16px;
 	box-shadow: var(--header-shadow);
 	background-color: var(--light);
 	width: 90vw;
