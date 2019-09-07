@@ -3,6 +3,8 @@
  * Main Settings
  */
 :root {
+	--card-width: 400px;
+	--width: 90vw;
 	--bold: 700;
 	--semi-bold: 600;
 	--normal: 400;
@@ -96,13 +98,75 @@ hr {
 
 
 /*
+ * Content Box
+ */
+.content {
+	margin: auto;
+	width: var(--width);
+}
+.container-limited {
+	margin: auto;
+	width: var(--width);
+	max-width: 1200px;
+}
+
+.content-intro {
+	width: 100vw;
+	padding-top: 80px;
+	padding-bottom: 32px;
+	margin-bottom: 32px;
+	background-color: var(--light);
+	box-shadow: var(--header-shadow);
+}
+.content-intro h1 {
+	font-size: 50px;
+}
+@media screen and (max-width: 849px) {
+	.content-intro {
+		padding-top: 60px;
+	}
+}
+.content-intro>div {
+	width: var(--width);
+	margin: auto;
+}
+.content-intro>div>div {
+	/* max-width: calc(2 * var(--card-width)); */
+	display: inline-block;
+}
+
+
+/*
+ * Mobile Management
+ */
+.div-only-mobile {
+    display: block;
+}
+.div-no-mobile {
+    display: block;
+}
+@media screen and (max-width: 849px) {
+	.div-no-mobile {
+	    display: none !important;
+	}
+	:root {
+		--width: 95vw;
+		--card-width: 300px;
+	}
+}
+@media screen and (min-width: 849px) {
+	.div-only-mobile {
+		display: none !important;
+	}
+}
+
+/*
  * Project
  */
 .project {
 	padding: 8px 16px 16px 16px;
 	box-shadow: var(--header-shadow);
 	background-color: var(--light);
-	width: 90vw;
 	margin: auto;
 	max-width: 800px;
 }
@@ -196,6 +260,8 @@ hr {
     user-select: none;
     text-align: center;
 	white-space: normal;
+	background-color: var(--dark);
+	color: var(--light);
 }
 .button:hover, .record-collapse:hover {
 	color: var(--heading-text);
@@ -206,8 +272,6 @@ hr {
 	opacity: 0.3;
 }
 .record-collapse {
-	background-color: var(--dark);
-	color: var(--light);
 	margin: 0px;
 	width: 8px;
 	padding: 0px;

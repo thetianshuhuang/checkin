@@ -1,0 +1,61 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+<script>
+
+function loadProgram(id, token) {
+	fetch("http://localhost:8000/api/records/get/" + id + "?token=" + token)
+	.then(res => res.json())
+	.then(out => { tmp(out); })
+	.catch(err => { throw err; });
+}
+
+function tmp(data) {
+    var program = new Program("root");
+    console.log(data)
+    program.updateRecords(data['records']);
+}
+
+</script>
+
+<div class="content-intro"><div><div>
+
+	<h2>{{user}} | Programs</h2>
+
+	<table>
+	{% for program in programs %}
+		<tr>
+			<td>{{program.name}}</td>
+			<td>API Token</td>
+			<td>{{program.api_token}}</td>
+		</tr>
+		<tr>
+			<td>
+				<button class="button" onclick="loadProgram('{{program.id}}', '{{program.access_token}}');">
+					LOAD
+				</button>
+			</td>
+			<td>Access Token</td>
+			<td>{{program.access_token}}</td>
+		</tr>
+	{% endfor %}
+	</table>
+
+	<div id="token-field"></div>
+
+</div></div></div>
+
+
+<div class="content">
+
+<script src="/static/util.js"></script>
+<script src="/static/icons.js"></script>
+<script src="/static/program.js"></script>
+
+<div style="height: 20px"></div>
+<div id="12345678-1234-1234-children" class="project">
+</div>
+
+
+{% endblock %}

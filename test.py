@@ -1,5 +1,6 @@
 import requests
 import json
+import uuid
 
 
 records = [
@@ -76,7 +77,7 @@ records = [
 
 b = requests.get(
     "http://localhost:8000/api/programs/new",
-    params={"token": "test_token_123", "name": "test program"})
+    params={"token": "test_token_123", "name": "test program " + str(uuid.uuid4())})
 res = json.loads(b.content)
 
 
