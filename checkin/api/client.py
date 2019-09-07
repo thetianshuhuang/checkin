@@ -1,8 +1,9 @@
 
 
-from .models import Program, Record
-from django.http import JsonResponse
+from .models import Program, Record, UserToken
+from .util import json_response
 from django.core.exceptions import ObjectDoesNotExist
+import secrets
 
 
 def serialize_objects(queryset, fields):
@@ -13,6 +14,7 @@ def serialize_objects(queryset, fields):
     ]
 
 
+@json_response
 def get_records(request, program):
 
     # Check authentication
@@ -20,7 +22,8 @@ def get_records(request, program):
         program = Program.objects.get(pk=program)
     except ObjectDoesNotExist:
         return {"error": "program does not exist"}
-    if request.GET.get('token') != program.api_token:
+    if not secrets.compare_digest(
+            request.GET.get('token'), program.access_token):
         return {"error": "invalid token"}
 
     fields = [
@@ -28,15 +31,24 @@ def get_records(request, program):
         "end", "meta"
     ]
 
-    return JsonResponse({
+    return {
         "records": serialize_objects(
-            Record.objects.filter(program_id=program), fields)})
+            Record.objects.filter(program_id=program), fields)
+    }
 
 
+@json_response
 def list_programs(request):
 
-    fields = ["api_token", "share_token", "start", "end"]
+    # Check token
+    try:
+        user = UserToken.objects.get(api_token=request.GET.get('token')).owner
+    except ObjectDoesNotExist:
+        return {"error": "invalid token"}
 
-    return JsonResponse({
+    fields = ["api_token", "start", "end"]
+
+    return {
         "programs": serialize_objects(
-            Program.objects.filter(owner=request.user), fields)})
+            Program.objects.filter(owner=user), fields)
+    }

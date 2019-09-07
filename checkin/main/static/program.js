@@ -125,7 +125,7 @@ class Program {
 	 */
 	updateElem(id, key) {
 		var tgt = document.getElementById(id + '-' + key);
-		var new_val = this.records[id][key];
+		var new_val = this.records[id][key].replace(/\n/g, "<br>");
 		if(tgt.innerHTML != new_val) { tgt.innerHTML = new_val; }
 	}
 
@@ -145,7 +145,7 @@ class Program {
 		else { return Math.min(1, this.progress[id] / this.totals[id]); }
 	}
 
-	/** 
+	/**
 	 * Update progress bar
 	 * @param {str} id - record ID to update progress for
 	 */
@@ -156,7 +156,7 @@ class Program {
 		var pbar = document.getElementById(id + '-progress-done');
 		if(!pbar) { return; }
 		pbar.style.width = progress;
-		
+
 		// Update progress text
 		var ptext = document.getElementById(id + "-progress-text");
 		var complete = (id in this.progress ? this.progress[id] : 0);

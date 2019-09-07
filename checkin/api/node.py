@@ -1,11 +1,12 @@
 """
 """
 
-from .models import Program, Record
+from .models import Program, Record, UserToken
+from .util import json_response
 import json
 from django.core.exceptions import ObjectDoesNotExist
-from django.http import JsonResponse
 from django.views.decorators.csrf import csrf_exempt
+import secrets
 
 
 def add_record(record, program):
@@ -43,6 +44,8 @@ def add_record(record, program):
             **{k: v for k, v in fields.items() if v is not None})
 
 
+@csrf_exempt
+@json_response
 def add_records(request, program):
     """
     {
@@ -73,7 +76,7 @@ def add_records(request, program):
         program = Program.objects.get(pk=program)
     except ObjectDoesNotExist:
         return {"error": "program does not exist"}
-    if request.GET.get('token') != program.api_token:
+    if not secrets.compare_digest(request.GET.get('token'), program.api_token):
         return {"error": "invalid token"}
 
     # Check mandatory keys
@@ -85,6 +88,28 @@ def add_records(request, program):
     return {"success": status}
 
 
-@csrf_exempt
-def view_add_records(request, program):
-    return JsonResponse(add_records(request, program))
+@json_response
+def create_program(request):
+    """Returns program ID."""
+
+    # Check token
+    try:
+        user = UserToken.objects.get(api_token=request.GET.get('token')).owner
+    except ObjectDoesNotExist:
+        return {"error": "invalid token"}
+
+    # Create program
+    program = Program.objects.create(
+        owner=user,
+        api_token=secrets.token_urlsafe(48),
+        access_token=secrets.token_urlsafe(48),
+        name=request.GET.get('name'),
+        start=None,
+        end=None)
+
+    # Return token
+    return {
+        "api_token": program.api_token,
+        "access_token": program.access_token,
+        "id": program.id
+    }

@@ -1,4 +1,5 @@
 import requests
+import json
 
 
 records = [
@@ -48,7 +49,7 @@ records = [
     {
         "record_id": "13",
         "name": "Test Error",
-        "desc": "Error traceback\netc",
+        "desc": "Error traceback\netc;\nLorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.",
         "node_id": "00",
         "type": "ERR",
         "start": 12345,
@@ -73,8 +74,23 @@ records = [
     },
 ]
 
+b = requests.get(
+    "http://localhost:8000/api/programs/new",
+    params={"token": "test_token_123", "name": "test program"})
+res = json.loads(b.content)
+
+
+token_record = res["api_token"]
+token_view = res["access_token"]
+pid = res["id"]
+
+print(pid)
+print(token_view)
+print(token_record)
+
+
 r = requests.post(
-    "http://localhost:8000/api/new/1",
-    params={"token": "abc123"},
+    "http://localhost:8000/api/records/new/" + str(pid),
+    params={"token": token_record},
     json={"records": records})
 print(r.content)

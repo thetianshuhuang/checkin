@@ -3,16 +3,36 @@ from django.contrib.auth.models import User
 from django.contrib import admin
 
 
+class UserToken(models.Model):
+    """Access tokens for each user
+
+    This token is necessary in order to create
+    new Programs. This token cannot be used to send records.
+    """
+
+    # Owner (user)
+    owner = models.ForeignKey(User, on_delete=models.CASCADE)
+
+    # Actual token
+    api_token = models.TextField(blank=False, null=False)
+
+    # Description
+    desc = models.TextField()
+
+
 class Program(models.Model):
     """Program; consists of a set of records."""
 
     # Owner (user)
     owner = models.ForeignKey(User, on_delete=models.SET_NULL, null=True)
 
-    # Access token (for APIs)
-    api_token = models.TextField()
-    # Share token
-    share_token = models.TextField()
+    # Record token
+    api_token = models.TextField(null=True)
+    # View access token
+    access_token = models.TextField(null=True)
+
+    # Name
+    name = models.TextField(null=True)
 
     # Start time; NULL if not started
     start = models.FloatField(null=True)
@@ -64,3 +84,4 @@ class QueuedRecord(Record):
 
 admin.site.register(Program)
 admin.site.register(Record)
+admin.site.register(UserToken)
