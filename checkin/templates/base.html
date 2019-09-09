@@ -1,6 +1,6 @@
 <!DOCTYPE html>
 <html>
-<title>Tianshu Huang {{pagetitle}}</title>
+<title>Checkin {{pagetitle}}</title>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <link rel="stylesheet" href="/static/icons.css">
@@ -51,7 +51,9 @@ function toggleTheme() {
 <body>
 
 <div class="header">
-	<a class="button button-navbar" style="font-weight: var(--semi-bold)" href="">Checkin Server</a>
+	<a class="button button-navbar" style="font-weight: var(--semi-bold)" href="">Checkin</a>
+	&#x25BA;
+	<a class="button button-navbar" style="font-weight: var(--semi-bold)" href="">{{user.username}}</a>
 </div>
 
 {% block content %}

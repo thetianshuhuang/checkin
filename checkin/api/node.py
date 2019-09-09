@@ -24,6 +24,16 @@ def add_record(record, program):
         if record["type"] not in ["TASK", "ERR", "WARN", "INFO", "META"]:
             return "error: invalid type"
 
+    # Not root and does not already exist
+    if len(record_src) == 0 and record.get("parent") != program:
+
+        # Make sure parent exists.
+        try:
+            Record.objects.get(
+                program_id=program, record_id=record.get("parent"))
+        except ObjectDoesNotExist:
+            return "error: invalid parent"
+
     # Assemble fields
     fields = {
         n: record.get(n) for n in
@@ -42,6 +52,8 @@ def add_record(record, program):
     else:
         record_src.update(
             **{k: v for k, v in fields.items() if v is not None})
+
+    return "success"
 
 
 @csrf_exempt
@@ -69,23 +81,23 @@ def add_records(request, program):
     try:
         body = json.loads(request.body)
     except json.JSONDecodeError:
-        return {"error": "invalid JSON"}
+        return {"error": "invalid JSON"}, 400
 
     # Check authentication
     try:
         program = Program.objects.get(pk=program)
     except ObjectDoesNotExist:
-        return {"error": "program does not exist"}
+        return {"error": "program does not exist"}, 404
     if not secrets.compare_digest(request.GET.get('token'), program.api_token):
-        return {"error": "invalid token"}
+        return {"error": "invalid token"}, 401
 
     # Check mandatory keys
     if type(body.get("records")) != list:
-        return {"error": "POST body must contain 'records' entry"}
+        return {"error": "POST body must contain 'records' entry"}, 400
 
     # Add records
     status = [add_record(record, program.id) for record in body["records"]]
-    return {"success": status}
+    return {"success": status}, 200
 
 
 @json_response
@@ -96,7 +108,7 @@ def create_program(request):
     try:
         user = UserToken.objects.get(api_token=request.GET.get('token')).owner
     except ObjectDoesNotExist:
-        return {"error": "invalid token"}
+        return {"error": "invalid token"}, 401
 
     # Create program
     program = Program.objects.create(
@@ -112,4 +124,22 @@ def create_program(request):
         "api_token": program.api_token,
         "access_token": program.access_token,
         "id": program.id
-    }
+    }, 200
+
+
+@json_response
+def delete_program(request, program):
+    """Delete a program."""
+
+    # Check authentication
+    try:
+        program = Program.objects.get(pk=program)
+    except ObjectDoesNotExist:
+        return {"error": "program does not exist"}, 404
+    if not secrets.compare_digest(request.GET.get('token'), program.api_token):
+        return {"error": "invalid token"}, 401
+
+    # Delete program
+    program.delete()
+
+    return {"success": []}, 200
