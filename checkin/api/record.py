@@ -1,15 +1,30 @@
-"""
-"""
+"""Record management API"""
 
-from .models import Program, Record, UserToken
-from .util import json_response
 import json
+import secrets
+
 from django.core.exceptions import ObjectDoesNotExist
 from django.views.decorators.csrf import csrf_exempt
-import secrets
+
+from .models import Record, Program
+from .util import json_response, serialize_objects
 
 
 def add_record(record, program):
+    """Add a single record.
+
+    Parameters
+    ----------
+    record : dict
+        Record dictionary. See below for format.
+    program : int
+        Target program id
+
+    Returns
+    -------
+    str
+        Status.
+    """
 
     # Check if ID exists
     if "record_id" not in record:
@@ -58,24 +73,43 @@ def add_record(record, program):
 
 @csrf_exempt
 @json_response
-def add_records(request, program):
-    """
-    {
-        "records": [
-            {
-                "node_id": <MAC>,
-                "record_id": <uuid>,
-                "parent": <uuid>,
-                "name": <str>,
-                "desc": <str>,
-                "type": <TASK|ERR|WARN|INFO|META>,
-                "start": <datetime>,
-                "end": <datetime>,
-                "meta": <json>,
-            },
-            ...
-        ]
-    }
+def new(request, program):
+    """API to create new records.
+
+    Parameters
+    ----------
+    request : Django request.
+        Should have the GET parameter 'token', which should be the program API
+        token.
+        The POST json payload should take the following format:
+        {
+            "records": [
+                {
+                    "node_id": <MAC>,
+                    "record_id": <uuid>,
+                    "parent": <uuid>,
+                    "name": <str>,
+                    "desc": <str>,
+                    "type": <TASK|ERR|WARN|INFO|META>,
+                    "start": <datetime>,
+                    "end": <datetime>,
+                    "meta": <json>,
+                },
+                ...
+            ]
+        }
+    program : int
+        Program ID.
+
+    Returns
+    -------
+    JsonResponse
+        Indicates success or error. Possible status codes:
+        - 400: Invalid JSON or JSON does not contain 'records' entry
+        - 401: Invalid token
+        - 404: Invalid program ID
+        - 200: Success. Note that individual records may fail, while the
+            request as a whole returns success.
     """
 
     try:
@@ -101,45 +135,42 @@ def add_records(request, program):
 
 
 @json_response
-def create_program(request):
-    """Returns program ID."""
+def get(request, program):
+    """Get records corresponding to a program.
 
-    # Check token
-    try:
-        user = UserToken.objects.get(api_token=request.GET.get('token')).owner
-    except ObjectDoesNotExist:
-        return {"error": "invalid token"}, 401
+    Parameters
+    ----------
+    request : Django request
+        Should have the GET parameter 'token', which is the program access
+        token.
+    program : int
+        Program ID
 
-    # Create program
-    program = Program.objects.create(
-        owner=user,
-        api_token=secrets.token_urlsafe(48),
-        access_token=secrets.token_urlsafe(48),
-        name=request.GET.get('name'),
-        start=None,
-        end=None)
-
-    # Return token
-    return {
-        "api_token": program.api_token,
-        "access_token": program.access_token,
-        "id": program.id
-    }, 200
-
-
-@json_response
-def delete_program(request, program):
-    """Delete a program."""
+    Returns
+    -------
+    JsonResponse
+        Same format as records/new, except in case of error.
+        Possible status codes:
+        - 401: Invalid token
+        - 404: Invalid program
+        - 200: Success
+    """
 
     # Check authentication
     try:
         program = Program.objects.get(pk=program)
     except ObjectDoesNotExist:
         return {"error": "program does not exist"}, 404
-    if not secrets.compare_digest(request.GET.get('token'), program.api_token):
+    if not secrets.compare_digest(
+            request.GET.get('token'), program.access_token):
         return {"error": "invalid token"}, 401
 
-    # Delete program
-    program.delete()
+    fields = [
+        "record_id", "parent", "name", "desc", "node_id", "type", "start",
+        "end", "meta"
+    ]
 
-    return {"success": []}, 200
+    return {
+        "records": serialize_objects(
+            Record.objects.filter(program_id=program), fields)
+    }, 200
