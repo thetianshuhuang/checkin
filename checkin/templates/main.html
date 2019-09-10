@@ -53,6 +53,7 @@ function tmp(data, id) {
 
 <div class="content-intro"><div><div>
 
+{% if user.is_authenticated %}
 	<h2>Tokens</h2>
 
 	<div class="token-table">
@@ -94,8 +95,9 @@ function tmp(data, id) {
 		</div>
 	{% endfor %}
 	</div>
+{% endif %}
 
-	<div id="token-field"></div>
+
 
 </div></div></div>
 

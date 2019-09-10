@@ -53,7 +53,13 @@ function toggleTheme() {
 <div class="header">
 	<a class="button button-navbar" style="font-weight: var(--semi-bold)" href="">Checkin</a>
 	&#x25BA;
-	<a class="button button-navbar" style="font-weight: var(--semi-bold)" href="">{{user.username}}</a>
+	<a class="button button-navbar" style="font-weight: var(--semi-bold)" href="">
+		{% if user.is_authenticated %}
+		{{user.username}}
+		{% else %}
+		Guest
+		{% endif %}
+	</a>
 </div>
 
 {% block content %}
