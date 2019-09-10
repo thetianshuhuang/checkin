@@ -1,12 +1,13 @@
 import requests
 import json
 import uuid
+import threading
 import time
 
 
 def send_records(
         records, server="http://localhost:8000", program=0, api_token=None):
-    """Send records to a server.
+    """Send records to a server; non-blocking.
 
     Use this function to send multiple updates at once to cut down on overhead
     waste.
@@ -24,16 +25,6 @@ def send_records(
         Program ID
     api_token : str
         Program API acess token
-
-    Returns
-    -------
-    dict
-        Server response. If the server does not respond with a valid JSON,
-        returns:
-        {
-            "error": <json.loads error>,
-            "content": <server returned content>
-        }
     """
 
     # Convert to dict if necessary
@@ -41,14 +32,12 @@ def send_records(
         record if type(record) == dict else record.dict()
         for record in records]
 
-    r = requests.post(
-        "{}/api/records/new/{}".format(server, program),
-        params={"token": api_token}, json={"records": records_cvt})
+    def f():
+        requests.post(
+            "{}/api/records/new/{}".format(server, program),
+            params={"token": api_token}, json={"records": records_cvt})
 
-    try:
-        return json.loads(r.content)
-    except Exception as e:
-        return {"error": e, "content": r.content}
+    threading.Thread(target=f).start()
 
 
 class Record:
@@ -224,6 +213,18 @@ class Record:
         return self
 
     def done(self, update=True):
+        """End timekeeping.
+
+        Keyword Args
+        ------------
+        update : bool
+            If True, updates the server with this task's end time.
+
+        Returns
+        -------
+        self
+            Allow method chaining.
+        """
         if self.start_time is None:
             raise Exception(
                 "Could not mark finish time: record not yet started")
