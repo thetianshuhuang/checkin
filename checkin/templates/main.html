@@ -2,24 +2,34 @@
 
 {% block style %}
 <style>
-.token-table {
-	width: 90vw;
-}
-.token-table .token div {
+.token div {
 	display: inline-block;
 	vertical-align: top;
 }
-.token-table .token div:nth-child(2) {
-	width: calc(90vw - 70px);
+.token div:nth-child(1) {
+	margin-right: 8px;
+	width: 50px;
+}
+.token div:nth-child(2) {
+	max-width: calc(90vw - 80px);
 	white-space: nowrap;
 	overflow: hidden;
 	float: right;
 	font-family: monospace;
 }
-.token-table .controls>button {
-	margin-right: 4px;
+.token-toggle {
+	margin-left: 11px;
+	padding-left: 8px;
+	border-left: 2px solid var(--dark);
 }
-
+.token-title {
+	max-width: 90vw;
+	overflow: hidden;
+	white-space: nowrap;
+}
+.controls {
+	padding-top: 8px;
+}
 </style>
 {% endblock %}
 
@@ -30,7 +40,6 @@
 <script src="/static/util.js"></script>
 <script src="/static/program.js"></script>
 <script>
-
 function loadProgram(id, token) {
 	if(document.getElementById(id + "-children")) {
 		console.log("already exists");
@@ -53,69 +62,17 @@ function tmp(data, id) {
 
 <div class="content-intro"><div><div>
 
-	<!--
-	<h2>{{user}} | programs</h2>
-
-	<table>
-	{% for token in tokens %}
-		<tr>
-			<td>{{token.desc}}</td>
-			<td>{{token.api_token}}</td>
-		</tr>
-	{% endfor %}
-	</table>
-
-	<div>
-	{% for program in programs %}
-		<div id="program-entry-{{program.id}}">
-			<button class="button-square" onclick="">
-				<svg xmlns="http://www.w3.org/2000/svg" height="24" viewBox="0 0 24 24" width="24"><path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/><path d="M0 0h24v24H0z" fill="none"/></svg>
-			</button>
-			<button class="button-square"
-					onclick="loadProgram('{{program.id}}', '{{program.access_token}}');">
-				<svg xmlns="http://www.w3.org/2000/svg" height="24" viewBox="0 0 24 24" width="24"><path d="M4 14h4v-4H4v4zm0 5h4v-4H4v4zM4 9h4V5H4v4zm5 5h12v-4H9v4zm0 5h12v-4H9v4zM9 5v4h12V5H9z"/><path d="M0 0h24v24H0z" fill="none"/></svg>
-			</button>
-			<button class="button-square">
-				<svg xmlns="http://www.w3.org/2000/svg" height="24" viewBox="0 0 24 24" width="24"><path d="M0 0h24v24H0V0z" fill="none"/><path d="M9.4 16.6L4.8 12l4.6-4.6L8 6l-6 6 6 6 1.4-1.4zm5.2 0l4.6-4.6-4.6-4.6L16 6l6 6-6 6-1.4-1.4z"/></svg>
-			</button>
-			<span style="padding: 0px 8px">{{program.name}}</span>
-		</div>
-	{% endfor %}
-	</div>
-
-	<table>
-	{% for program in programs %}
-		<tr>
-			<td>Write: {{program.api_token}}</td>
-			<td>Read: {{program.access_token}}</td>
-		</tr>
-	{% endfor %}
-	</table>
-
-	<div id="token-field"></div>
-	-->
-
-	<h2>Tokens</h2>
+	<h2>User Tokens</h2>
 	{% if user.is_authenticated %}
 
-	<div class="token-table" id='user-token-table'>
-		{% for token in tokens %}
-		<div class="controls" id="{{token.api_token}}-controls">
-			<button class="button-icon" onclick="deleteToken('{{token.api_token}}');"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"><path d="M6 19c0 1.1.9 2 2 2h8c1.1 0 2-.9 2-2V7H6v12zM19 4h-3.5l-1-1h-5l-1 1H5v2h14V4z"/><path d="M0 0h24v24H0z" fill="none"/></svg></button>
-			{{token.desc}}
-		</div>
-		<div class="token" id="{{token.api_token}}-token">
-			<div>API</div>
-			<div>{{token.api_token}}</div>
-		</div>
-		{% endfor %}
-		</div>
+	<!-- Populated by script via API -->
+	<div id="user-token-table">
 	</div>
-	<div class="token-table">
-		<div class="controls">
-			<button class="button-icon" onclick="addToken('new-token');">
-				<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"><path d="M0 0h24v24H0z" fill="none"/><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm5 11h-4v4h-2v-4H7v-2h4V7h2v4h4v2z"/></svg>
-			</button>
+
+	<div class="controls">
+		<button class="button-icon" onclick="addToken('new-token');">
+			<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"><path d="M0 0h24v24H0z" fill="none"/><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm5 11h-4v4h-2v-4H7v-2h4V7h2v4h4v2z"/></svg>
+		</button>
 		<input type="text" id="new-token"></input>
 	</div>
 
@@ -125,34 +82,49 @@ function tmp(data, id) {
 
 	<h2>Programs</h2>
 
-	<div class="token-table">
-		{% if user.is_authenticated %}
-		{% for program in programs %}
-		<div class="controls">
-			<button class="button-icon" onclick="deleteProgram('{{program.id}}','{{program.api_token}}');"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"><path d="M6 19c0 1.1.9 2 2 2h8c1.1 0 2-.9 2-2V7H6v12zM19 4h-3.5l-1-1h-5l-1 1H5v2h14V4z"/><path d="M0 0h24v24H0z" fill="none"/></svg></button>
-			{{token.desc}}
-			<button class="button-icon" onclick="loadProgram('{{program.id}}', '{{program.access_token}}');"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"><path d="M0 0h24v24H0z" fill="none"/><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm5 11h-4v4h-2v-4H7v-2h4V7h2v4h4v2z"/></svg></button>
-			{{program.name}}
-		</div>
-		<div class="token">
-			<div>Access</div>
-			<div>{{program.access_token}}</div>
-		</div>
-		<div class="token">
-			<div>API</div>
-			<div>{{program.api_token}}</div>
-		</div>
-		{% endfor %}
-		{% endif %}
-
-		<div class="controls">
-			<button class="button-icon" onclick="">
-				<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"><path d="M0 0h24v24H0z" fill="none"/><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm5 11h-4v4h-2v-4H7v-2h4V7h2v4h4v2z"/></svg>
+	{% if user.is_authenticated %}
+	{% for program in programs %}
+	<div id="program-table-{{program.id}}">
+		<div class="token-title">
+			<button class="button-icon"
+					onclick="deleteProgram('{{program.id}}','{{program.api_token}}');">
+				<svg xmlns="http://www.w3.org/2000/svg" height="24" viewBox="0 0 24 24" width="24"><path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/><path d="M0 0h24v24H0z" fill="none"/></svg>
 			</button>
-			<input type="text" id="new-token"></input>
+			<button class="button-icon"
+					onclick="toggle('program-tokens-{{program.id}}');">
+				<svg xmlns="http://www.w3.org/2000/svg" height="24" viewBox="0 0 24 24" width="24"><path d="M0 0h24v24H0V0z" fill="none"/><path d="M9.4 16.6L4.8 12l4.6-4.6L8 6l-6 6 6 6 1.4-1.4zm5.2 0l4.6-4.6-4.6-4.6L16 6l6 6-6 6-1.4-1.4z"/></svg>
+			</button>
+			<button class="button-icon"
+					onclick="loadProgram('{{program.id}}', '{{program.access_token}}');">
+				<svg xmlns="http://www.w3.org/2000/svg" height="24" viewBox="0 0 24 24" width="24"><path d="M4 14h4v-4H4v4zm0 5h4v-4H4v4zM4 9h4V5H4v4zm5 5h12v-4H9v4zm0 5h12v-4H9v4zM9 5v4h12V5H9z"/><path d="M0 0h24v24H0z" fill="none"/></svg>
+			</button>
+			<span style="padding: 0px 8px">{{program.name}}</span>
 		</div>
-
+		<div id="program-tokens-{{program.id}}" class="token-toggle" style="display: none">
+			<div class="token">
+				<div>Access</div>
+				<div>{{program.access_token}}</div>
+			</div>
+			<div class="token">
+				<div>API</div>
+				<div>{{program.api_token}}</div>
+			</div>
+		</div>
 	</div>
+	{% endfor %}
+	{% endif %}
+
+	<div class="controls">
+		<button class="button-icon" onclick="todo();">
+			<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"><path d="M0 0h24v24H0z" fill="none"/><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm5 11h-4v4h-2v-4H7v-2h4V7h2v4h4v2z"/></svg>
+		</button>
+		<input type="text" id="new-program"></input>
+	</div>
+
+
+	<script>
+	getTokens();
+	</script>
 
 </div></div></div>
 

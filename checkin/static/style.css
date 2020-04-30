@@ -3,10 +3,13 @@
  * Main Settings
  */
 :root {
+	--card-width: 400px;
+	--width: 90vw;
 	--bold: 700;
 	--semi-bold: 600;
 	--normal: 400;
 	--font: 'Open Sans', sans-serif;
+	--icon-size: 16px;
 }
 
 html, body{
@@ -69,6 +72,11 @@ hr {
 
 	--item-shadow: 0 2px 5px 0 rgba(0,0,0,0.16),0 2px 10px 0 rgba(0,0,0,0.12);
 	--header-shadow: 0 4px 8px 0 rgba(0,0,0,0.16),0 2px 10px 0 rgba(0,0,0,0.12);
+
+	--warning: #ffcc00;
+	--error: #ff3300;
+	--info: #005cf1;
+	--done: #00cc00;
 }
 [data-theme="dark"] {
 	--dark: #f3f3f3;
@@ -90,17 +98,164 @@ hr {
 
 
 /*
+ * Content Box
+ */
+.content {
+	margin: auto;
+	width: var(--width);
+}
+.container-limited {
+	margin: auto;
+	width: var(--width);
+	max-width: 1200px;
+}
+
+.content-intro {
+	width: 100vw;
+	padding-top: 80px;
+	padding-bottom: 32px;
+	margin-bottom: 32px;
+	background-color: var(--light);
+	box-shadow: var(--header-shadow);
+}
+.content-intro h1 {
+	font-size: 50px;
+}
+@media screen and (max-width: 849px) {
+	.content-intro {
+		padding-top: 60px;
+	}
+}
+.content-intro>div {
+	width: var(--width);
+	margin: auto;
+}
+.content-intro>div>div {
+	/* max-width: calc(2 * var(--card-width)); */
+	display: inline-block;
+}
+
+
+/*
+ * Mobile Management
+ */
+.div-only-mobile {
+    display: block;
+}
+.div-no-mobile {
+    display: block;
+}
+@media screen and (max-width: 849px) {
+	.div-no-mobile {
+	    display: none !important;
+	}
+	:root {
+		--width: 95vw;
+		--card-width: 300px;
+	}
+}
+@media screen and (min-width: 849px) {
+	.div-only-mobile {
+		display: none !important;
+	}
+}
+
+/*
+ * Project
+ */
+.program {
+	padding: 8px 16px 16px 16px;
+	box-shadow: var(--header-shadow);
+	background-color: var(--light);
+	margin: auto;
+	margin-top: 20px;
+	margin-bottom: 20px;
+	max-width: 800px;
+}
+
+
+/*
+ * Record
+ */
+.record-container {
+	margin: 8px 0px 0px 0px;
+	/* border: 1px solid var(--border); */
+	display: flex;
+}
+
+
+.record-content {
+	width: 100%;
+	margin: 0px 0px 0px 8px;
+}
+
+
+.record-metadata {
+}
+
+.record-children {
+}
+
+.record-header {
+	font-size: 18px;
+	position: relative;
+}
+.record-name {
+	display: inline-block;
+}
+.record-progress-text {
+	display: inline-block;
+	margin: 2px;
+	font-size: 12px;
+	position: absolute;
+	right: 0px;
+	bottom: 0px;
+}
+.record-desc {
+	font-size: 12px;
+}
+.record-icon {
+	display: inline-block;
+	vertical-align: middle;
+	padding-right: 4px;
+}
+.record-icon > svg {
+	width: var(--icon-size);
+	height: var(--icon-size);
+}
+
+
+
+.record-progress, .record-progress-done {
+	height: 5px;
+	margin: 0px;
+	font-size: 8px;
+}
+.record-progress {
+	background-color: var(--dark);
+	width: 100%;
+}
+.record-progress-done {
+	background-color: var(--highlight);
+	width: 0%;
+}
+
+
+/*
  * Buttons
  */
-.button {
+
+<<<<<<< HEAD
+.button, .record-collapse, .button-square {
+=======
+.button, .record-collapse, .button-icon {
+>>>>>>> 34569f75c29b368cf434f51fdff059fe3c9620ca
 	border: none;
 	display: inline-block;
-	padding: 8px 16px;
 	vertical-align: middle;
 	overflow: hidden;
 	text-decoration: none;
 	color: inherit;
-	background-color: inherit;
 	cursor: pointer;
     -webkit-touch-callout: none;
     -webkit-user-select: none;
@@ -111,11 +266,48 @@ hr {
     text-align: center;
 	white-space: normal;
 }
-.button:hover {
+.button, .record-collapse {
+	background-color: var(--dark);
+	color: var(--light);
+}
+<<<<<<< HEAD
+.button:hover, .record-collapse:hover, .button-square:hover {
 	color: var(--heading-text);
 	background-color: var(--highlight) !important;
 }
-.button:disabled {
+.button:disabled, .record-collapse:disabled, .button-square:disabled {
+=======
+.button:hover, .record-collapse:hover, .button-icon:hover {
+	color: var(--heading-text);
+	background-color: var(--highlight) !important;
+}
+.button:disabled, .record-collapse:disabled, .button-icon:disabled {
+>>>>>>> 34569f75c29b368cf434f51fdff059fe3c9620ca
 	cursor: not-allowed;
 	opacity: 0.3;
 }
+.record-collapse {
+	margin: 0px;
+	width: 8px;
+	padding: 0px;
+	font-size: 10px;
+}
+<<<<<<< HEAD
+.button-square {
+	margin: 0px;
+	padding: 0px;
+	width: 24px;
+	height: 24px;
+	background-color: var(--light);
+}
+=======
+.button-icon {
+	width: 24px;
+	height: 24px;
+	padding: 0px;
+}
+.button-icon>svg {
+	width: 16px;
+	height: 16px;
+}
+>>>>>>> 34569f75c29b368cf434f51fdff059fe3c9620ca

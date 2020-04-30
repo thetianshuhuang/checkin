@@ -2,18 +2,77 @@
 function deleteProgram(id, token) {
 	fetch("http://" + SERVER + "/api/programs/delete/" + id + "?token=" + token)
 	.then(res => res.json())
-	.then(out => {console.log(out);})
+	.then(out => {
+		console.log(out);
+		destroy("program-table-" + id)
+	})
 	.catch(err => {throw err;});
 }
+
 
 function deleteToken(token) {
 	fetch("http://" + SERVER + "/api/tokens/delete?token=" + token)
 	.then(res => res.json())
 	.then(out => {
 		console.log(out);
-		for(var sf of ['-token', '-controls']) {
-			var div = document.getElementById(token + sf);
-			div.parentNode.removeChild(div);
+		destroy("user-token-" + token);
+	})
+	.catch(err => {throw err;});
+}
+
+
+function createUserTokenRow(out) {
+	var table = document.getElementById('user-token-table');
+
+	var entry = document.createElement("div");
+	entry.id = "user-token-" + out.api_token;
+	table.appendChild(entry);
+
+	// Title
+	var title = document.createElement("div");
+	title.className = "token-title";
+	entry.appendChild(title);
+
+	events = [
+		["DELETE", function() { deleteToken(out.api_token); }],
+		["TOGGLE", function() { toggle('user-tokens-' + out.api_token); }]
+	];
+
+	for(var s of events) {
+		var btn = document.createElement("button");
+		btn.addEventListener("click", s[1]);
+		btn.innerHTML = BUTTONS[s[0]];
+		btn.className = "button-icon";
+		title.appendChild(btn);
+	}
+
+	var tokenDesc = document.createElement("span");
+	tokenDesc.innerHTML = out.desc;
+	tokenDesc.style = "padding-left: 8px";
+	title.appendChild(tokenDesc);
+
+	// Toggleable API keys
+	var toggleTokens = document.createElement("div");
+	toggleTokens.id = "user-tokens-" + out.api_token;
+	toggleTokens.className = "token";
+	toggleTokens.style = "display: none";
+	entry.appendChild(toggleTokens);
+
+	for(var t of ["API", out.api_token]) {
+		var d = document.createElement("div");
+		d.innerHTML = t;
+		toggleTokens.appendChild(d);
+	}
+}
+
+
+function getTokens() {
+	fetch("http://" + SERVER + "/api/tokens/list")
+	.then(res => res.json())
+	.then(out => {
+		console.log(out);
+		for(var token of out.tokens) {
+			createUserTokenRow(token);
 		}
 	})
 	.catch(err => {throw err;});
@@ -26,29 +85,7 @@ function addToken(target) {
 	.then(res => res.json())
 	.then(out => {
 		console.log(out);
-		var table = document.getElementById('user-token-table');
-
-		var controls = document.createElement('div');
-		controls.className = 'controls';
-		controls.setAttribute('id', out.api_token + '-controls');
-		table.appendChild(controls);
-
-		var button = document.createElement('button');
-		button.className = 'button-icon';
-		button.innerHTML = BUTTONS.DELETE;
-		button.addEventListener("click", function() {
-			deleteToken(out.api_token);
-		})
-		controls.appendChild(button);
-		console.log(out.desc);
-		controls.appendChild(document.createTextNode(out.desc));
-
-		var token = document.createElement('div');
-		token.className = 'token';
-		token.setAttribute('id', out.api_token + '-token');
-		table.appendChild(token);
-		token.appendChild(createDivText('API'));
-		token.appendChild(createDivText(out.api_token));
+		createUserTokenRow(out);
 	})
 	.catch(err => {throw err;});
 }

@@ -9,6 +9,7 @@ giat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in
 culpa qui officia deserunt mollit anim id est laborum.
 """
 SAMPLE_ERROR = """
+BEGIN_SAMPLE_ERROR (not a real error in django!)
 Exception in thread django-main-thread:
 Traceback (most recent call last):
   [...]

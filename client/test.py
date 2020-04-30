@@ -299,7 +299,7 @@ class Program(Record):
                 params={"token": user_token, "name": name})
             if r.status_code != 200:
                 raise Exception(
-                    "Server did not return success (200):\n" + r.content)
+                    "Server did not return success (200):\n" + str(r.content))
 
             # Save program details
             res = json.loads(r.content)

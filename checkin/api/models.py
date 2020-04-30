@@ -70,6 +70,9 @@ class Record(models.Model):
     # End Time (POSIX time); NULL if task not complete
     end = models.FloatField(null=True)
 
+    # Time last updated (POSIX time);
+    updated = models.FloatField(null=True)
+
     # Additional metadata (JSON)
     meta = models.TextField(null=True)
 

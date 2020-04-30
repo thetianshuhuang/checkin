@@ -1,5 +1,6 @@
 """Record management API"""
 
+import time
 import json
 import secrets
 
@@ -57,6 +58,9 @@ def add_record(record, program):
     meta = record.get("meta")
     fields["meta"] = json.dumps(meta) if meta else None
 
+    # Always set updated time
+    fields["updated"] = time.time()
+
     # Create new
     if len(record_src) == 0:
         Record.objects.create(
@@ -74,7 +78,7 @@ def add_record(record, program):
 @csrf_exempt
 @json_response
 def new(request, program):
-    """API to create new records.
+    """API to create new records or modify existing ones.
 
     Parameters
     ----------
@@ -143,6 +147,8 @@ def get(request, program):
     request : Django request
         Should have the GET parameter 'token', which is the program access
         token.
+        Optional GET parameter 'time'; if provided, only records updated after
+        'time' are included.
     program : int
         Program ID
 
@@ -170,7 +176,14 @@ def get(request, program):
         "end", "meta"
     ]
 
+    # Filter by time?
+    filters = {"program_id": program}
+    t = request.GET.get('time')
+    try:
+        filters["updated__gte"] = float(t)
+    except (TypeError, ValueError):
+        pass
+
     return {
-        "records": serialize_objects(
-            Record.objects.filter(program_id=program), fields)
+        "records": serialize_objects(Record.objects.filter(**filters), fields)
     }, 200

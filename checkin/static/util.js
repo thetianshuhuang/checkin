@@ -26,7 +26,7 @@ function toggle(id) {
 
 function destroy(id) {
     var elem = document.getElementById(id);
-    elem.parentNode.removeChild(elem);
+    element.parentNode.removeChild(element);
 }
 
 function createDivText(txt) {
@@ -34,8 +34,4 @@ function createDivText(txt) {
     var text = document.createTextNode(txt);
     div.appendChild(text);
     return div;
-}
-
-function todo() {
-    alert("This function not yet implemented.");
 }

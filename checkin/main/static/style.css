@@ -244,12 +244,7 @@ hr {
 /*
  * Buttons
  */
-
-<<<<<<< HEAD
-.button, .record-collapse, .button-square {
-=======
 .button, .record-collapse, .button-icon {
->>>>>>> 34569f75c29b368cf434f51fdff059fe3c9620ca
 	border: none;
 	display: inline-block;
 	vertical-align: middle;
@@ -270,19 +265,11 @@ hr {
 	background-color: var(--dark);
 	color: var(--light);
 }
-<<<<<<< HEAD
-.button:hover, .record-collapse:hover, .button-square:hover {
-	color: var(--heading-text);
-	background-color: var(--highlight) !important;
-}
-.button:disabled, .record-collapse:disabled, .button-square:disabled {
-=======
 .button:hover, .record-collapse:hover, .button-icon:hover {
 	color: var(--heading-text);
 	background-color: var(--highlight) !important;
 }
 .button:disabled, .record-collapse:disabled, .button-icon:disabled {
->>>>>>> 34569f75c29b368cf434f51fdff059fe3c9620ca
 	cursor: not-allowed;
 	opacity: 0.3;
 }
@@ -292,22 +279,10 @@ hr {
 	padding: 0px;
 	font-size: 10px;
 }
-<<<<<<< HEAD
-.button-square {
-	margin: 0px;
-	padding: 0px;
-	width: 24px;
-	height: 24px;
-	background-color: var(--light);
-}
-=======
 .button-icon {
 	width: 24px;
 	height: 24px;
 	padding: 0px;
+	margin: 0px;
+	background-color: inherit;
 }
-.button-icon>svg {
-	width: 16px;
-	height: 16px;
-}
->>>>>>> 34569f75c29b368cf434f51fdff059fe3c9620ca
