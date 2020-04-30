@@ -1,6 +1,8 @@
 from django.urls import path
-from . import node
-from . import client
+
+from . import token
+from . import record
+from . import program
 
 from django.http import JsonResponse
 
@@ -10,10 +12,16 @@ def api_404(request):
 
 
 urlpatterns = [
-    path('records/new/<program>', node.add_records),
-    path('records/get/<program>', client.get_records),
-    path('programs/new', node.create_program),
-    path('programs/list', client.list_programs),
+    path('records/new/<program>', record.new),
+    path('records/get/<program>', record.get),
+
+    path('programs/new', program.create),
+    path('programs/list', program.list),
+    path('programs/delete/<program>', program.delete),
+
+    path('tokens/delete', token.delete),
+    path('tokens/new', token.new),
+    path('tokens/list', token.list),
 
     path(r'.*/', api_404)
 ]

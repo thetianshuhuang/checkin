@@ -24,8 +24,18 @@ function toggle(id) {
     elem.style.display = (elem.style.display === "none" ? "block" : "none");
 }
 
+<<<<<<< HEAD
 function destroy(id) {
     var elem = document.getElementById(id);
     element.parentNode.removeChild(element);
 }
 
+=======
+
+function createDivText(txt) {
+    var div = document.createElement('div');
+    var text = document.createTextNode(txt);
+    div.appendChild(text);
+    return div;
+}
+>>>>>>> 34569f75c29b368cf434f51fdff059fe3c9620ca

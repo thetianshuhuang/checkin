@@ -163,11 +163,13 @@ hr {
 /*
  * Project
  */
-.project {
+.program {
 	padding: 8px 16px 16px 16px;
 	box-shadow: var(--header-shadow);
 	background-color: var(--light);
 	margin: auto;
+	margin-top: 20px;
+	margin-bottom: 20px;
 	max-width: 800px;
 }
 
@@ -243,7 +245,11 @@ hr {
  * Buttons
  */
 
+<<<<<<< HEAD
 .button, .record-collapse, .button-square {
+=======
+.button, .record-collapse, .button-icon {
+>>>>>>> 34569f75c29b368cf434f51fdff059fe3c9620ca
 	border: none;
 	display: inline-block;
 	vertical-align: middle;
@@ -259,14 +265,24 @@ hr {
     user-select: none;
     text-align: center;
 	white-space: normal;
+}
+.button, .record-collapse {
 	background-color: var(--dark);
 	color: var(--light);
 }
+<<<<<<< HEAD
 .button:hover, .record-collapse:hover, .button-square:hover {
 	color: var(--heading-text);
 	background-color: var(--highlight) !important;
 }
 .button:disabled, .record-collapse:disabled, .button-square:disabled {
+=======
+.button:hover, .record-collapse:hover, .button-icon:hover {
+	color: var(--heading-text);
+	background-color: var(--highlight) !important;
+}
+.button:disabled, .record-collapse:disabled, .button-icon:disabled {
+>>>>>>> 34569f75c29b368cf434f51fdff059fe3c9620ca
 	cursor: not-allowed;
 	opacity: 0.3;
 }
@@ -276,6 +292,7 @@ hr {
 	padding: 0px;
 	font-size: 10px;
 }
+<<<<<<< HEAD
 .button-square {
 	margin: 0px;
 	padding: 0px;
@@ -283,3 +300,14 @@ hr {
 	height: 24px;
 	background-color: var(--light);
 }
+=======
+.button-icon {
+	width: 24px;
+	height: 24px;
+	padding: 0px;
+}
+.button-icon>svg {
+	width: 16px;
+	height: 16px;
+}
+>>>>>>> 34569f75c29b368cf434f51fdff059fe3c9620ca

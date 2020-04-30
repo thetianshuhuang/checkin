@@ -1,13 +1,18 @@
 
 
 class Program {
-    constructor(container) {
+    constructor(program_id) {
         this.records = {};
 
         this.progress = {};
         this.totals = {};
 
-        this.container = document.getElementById(container);
+        this.container = document.createElement("div");
+        this.container.className = "program"
+        this.container.setAttribute("id", program_id + "-children");
+        this.container = (
+        	document.getElementById("content").appendChild(this.container));
+
         this.recompute_progress = false;
     }
 
@@ -181,7 +186,13 @@ class Program {
         c.makeDiv(children, "desc");
 
         // Collapse button
-        button.appendChild(document.createTextNode("-"));
+        if(record.type != 'TASK') {
+            button.appendChild(document.createTextNode("+"));
+            children.style.display = "none"
+        }
+        else {
+            button.appendChild(document.createTextNode("-"));
+        }
         button.addEventListener("click", function() {
             this.innerHTML = (this.innerHTML == "+" ? "-" : "+");
             toggle(record.record_id + "-children");

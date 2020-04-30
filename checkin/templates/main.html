@@ -1,18 +1,50 @@
 {% extends "base.html" %}
 
-{% block content %}
+{% block style %}
+<style>
+.token-table {
+	width: 90vw;
+}
+.token-table .token div {
+	display: inline-block;
+	vertical-align: top;
+}
+.token-table .token div:nth-child(2) {
+	width: calc(90vw - 70px);
+	white-space: nowrap;
+	overflow: hidden;
+	float: right;
+	font-family: monospace;
+}
+.token-table .controls>button {
+	margin-right: 4px;
+}
 
+</style>
+{% endblock %}
+
+
+{% block content %}
+<script src="/static/icons.js"></script>
+<script src="/static/api.js"></script>
+<script src="/static/util.js"></script>
+<script src="/static/program.js"></script>
 <script>
 
 function loadProgram(id, token) {
+	if(document.getElementById(id + "-children")) {
+		console.log("already exists");
+		return;
+	}
+
 	fetch("http://localhost:8000/api/records/get/" + id + "?token=" + token)
 	.then(res => res.json())
-	.then(out => { tmp(out); })
+	.then(out => { tmp(out, id); })
 	.catch(err => { throw err; });
 }
 
-function tmp(data) {
-    var program = new Program("root");
+function tmp(data, id) {
+    var program = new Program(id);
     console.log(data)
     program.updateRecords(data['records']);
 }
@@ -21,6 +53,7 @@ function tmp(data) {
 
 <div class="content-intro"><div><div>
 
+	<!--
 	<h2>{{user}} | programs</h2>
 
 	<table>
@@ -60,18 +93,77 @@ function tmp(data) {
 	</table>
 
 	<div id="token-field"></div>
+	-->
+
+	<h2>Tokens</h2>
+	{% if user.is_authenticated %}
+
+	<div class="token-table" id='user-token-table'>
+		{% for token in tokens %}
+		<div class="controls" id="{{token.api_token}}-controls">
+			<button class="button-icon" onclick="deleteToken('{{token.api_token}}');"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"><path d="M6 19c0 1.1.9 2 2 2h8c1.1 0 2-.9 2-2V7H6v12zM19 4h-3.5l-1-1h-5l-1 1H5v2h14V4z"/><path d="M0 0h24v24H0z" fill="none"/></svg></button>
+			{{token.desc}}
+		</div>
+		<div class="token" id="{{token.api_token}}-token">
+			<div>API</div>
+			<div>{{token.api_token}}</div>
+		</div>
+		{% endfor %}
+		</div>
+	</div>
+	<div class="token-table">
+		<div class="controls">
+			<button class="button-icon" onclick="addToken('new-token');">
+				<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"><path d="M0 0h24v24H0z" fill="none"/><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm5 11h-4v4h-2v-4H7v-2h4V7h2v4h4v2z"/></svg>
+			</button>
+		<input type="text" id="new-token"></input>
+	</div>
+
+	{% else %}
+	Log in to create user API tokens.
+	{% endif %}
+
+	<h2>Programs</h2>
+
+	<div class="token-table">
+		{% if user.is_authenticated %}
+		{% for program in programs %}
+		<div class="controls">
+			<button class="button-icon" onclick="deleteProgram('{{program.id}}','{{program.api_token}}');"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"><path d="M6 19c0 1.1.9 2 2 2h8c1.1 0 2-.9 2-2V7H6v12zM19 4h-3.5l-1-1h-5l-1 1H5v2h14V4z"/><path d="M0 0h24v24H0z" fill="none"/></svg></button>
+			{{token.desc}}
+			<button class="button-icon" onclick="loadProgram('{{program.id}}', '{{program.access_token}}');"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"><path d="M0 0h24v24H0z" fill="none"/><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm5 11h-4v4h-2v-4H7v-2h4V7h2v4h4v2z"/></svg></button>
+			{{program.name}}
+		</div>
+		<div class="token">
+			<div>Access</div>
+			<div>{{program.access_token}}</div>
+		</div>
+		<div class="token">
+			<div>API</div>
+			<div>{{program.api_token}}</div>
+		</div>
+		{% endfor %}
+		{% endif %}
+
+		<div class="controls">
+			<button class="button-icon" onclick="">
+				<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"><path d="M0 0h24v24H0z" fill="none"/><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm5 11h-4v4h-2v-4H7v-2h4V7h2v4h4v2z"/></svg>
+			</button>
+			<input type="text" id="new-token"></input>
+		</div>
+
+	</div>
 
 </div></div></div>
 
 
 <div class="content">
 
-<script src="/static/util.js"></script>
-<script src="/static/icons.js"></script>
-<script src="/static/program.js"></script>
-
 <div style="height: 20px"></div>
-<div id="12345678-1234-1234-children" class="project">
+
+<div id='content'>
+</div>
+
 </div>
 
 
