@@ -243,14 +243,13 @@ hr {
  * Buttons
  */
 
-.button, .record-collapse {
+.button, .record-collapse, .button-square {
 	border: none;
 	display: inline-block;
 	vertical-align: middle;
 	overflow: hidden;
 	text-decoration: none;
 	color: inherit;
-	background-color: inherit;
 	cursor: pointer;
     -webkit-touch-callout: none;
     -webkit-user-select: none;
@@ -263,11 +262,11 @@ hr {
 	background-color: var(--dark);
 	color: var(--light);
 }
-.button:hover, .record-collapse:hover {
+.button:hover, .record-collapse:hover, .button-square:hover {
 	color: var(--heading-text);
 	background-color: var(--highlight) !important;
 }
-.button:disabled, .record-collapse:disabled {
+.button:disabled, .record-collapse:disabled, .button-square:disabled {
 	cursor: not-allowed;
 	opacity: 0.3;
 }
@@ -276,4 +275,11 @@ hr {
 	width: 8px;
 	padding: 0px;
 	font-size: 10px;
+}
+.button-square {
+	margin: 0px;
+	padding: 0px;
+	width: 24px;
+	height: 24px;
+	background-color: var(--light);
 }

@@ -113,3 +113,18 @@ def create_program(request):
         "access_token": program.access_token,
         "id": program.id
     }
+
+
+@json_response
+def destroy_program(request):
+    """Destroy a program"""
+
+    # Check token
+    try:
+        user = UserToken.objects.get(api_token=request.GET.get('token')).owner
+    except ObjectDoesNotExist:
+        return {"error": "invalid token"}
+
+    # Check if program exists
+    try:
+        program = Program.objects.get()

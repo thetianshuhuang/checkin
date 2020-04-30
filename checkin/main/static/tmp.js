@@ -105,7 +105,7 @@ function draw(parent, current) {
 
 		// Name
 		var name_ctr = c.makeDiv(metadata, "name-ctr", "metadata-name");
-		
+
 		// Icon
 		var name_icon = c.makeDiv(name_ctr, "name-icon", "metadata-name-icon");
 		update_icon(data, name_icon);

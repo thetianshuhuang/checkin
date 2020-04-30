@@ -22,6 +22,8 @@ def get_records(request, program):
         program = Program.objects.get(pk=program)
     except ObjectDoesNotExist:
         return {"error": "program does not exist"}
+
+    # Access Token required
     if not secrets.compare_digest(
             request.GET.get('token'), program.access_token):
         return {"error": "invalid token"}

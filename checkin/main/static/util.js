@@ -23,3 +23,9 @@ function toggle(id) {
     var elem = document.getElementById(id);
     elem.style.display = (elem.style.display === "none" ? "block" : "none");
 }
+
+function destroy(id) {
+    var elem = document.getElementById(id);
+    element.parentNode.removeChild(element);
+}
+
