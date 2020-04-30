@@ -23,3 +23,11 @@ function toggle(id) {
     var elem = document.getElementById(id);
     elem.style.display = (elem.style.display === "none" ? "block" : "none");
 }
+
+
+function createDivText(txt) {
+    var div = document.createElement('div');
+    var text = document.createTextNode(txt);
+    div.appendChild(text);
+    return div;
+}

@@ -21,6 +21,7 @@ urlpatterns = [
 
     path('tokens/delete', token.delete),
     path('tokens/new', token.new),
+    path('tokens/list', token.list),
 
     path(r'.*/', api_404)
 ]

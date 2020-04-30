@@ -26,17 +26,10 @@ err = qt.error(
     name="Test Error",
     desc="Error traceback\n" + SAMPLE_ERROR)
 
-print(p.dict())
-
-print(p.send_records([p, st1, info, warning, qt, err]))
-
 input()
 st1.done()
-p.send_records([st1])
 input()
 qt.start()
-p.send_records([qt])
 input()
 qt.done()
 p.done()
-p.send_records([p, qt])

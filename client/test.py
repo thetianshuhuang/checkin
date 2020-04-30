@@ -5,6 +5,46 @@ import threading
 import time
 
 
+class ServerManager:
+
+    def __init__(self):
+        self.slock = threading.Lock()
+        self.queue = {}
+        self.qlock = threading.Lock()
+
+    def send_records(self, records, tuple_key):
+
+        self.qlock.acquire()
+        if tuple_key not in self.queue:
+            self.queue[tuple_key] = []
+        self.queue[tuple_key] += records
+        self.qlock.release()
+
+        threading.Thread(target=self.send_queue).start()
+
+    def send_queue(self):
+
+        # Send items
+        self.slock.acquire()
+
+        # Swap queue
+        self.qlock.acquire()
+        queue_swap = self.queue
+        self.queue = {}
+        self.qlock.release()
+
+        for (token, server, program), messages in queue_swap.items():
+            if len(messages) > 0:
+                requests.post(
+                    "{}/api/records/new/{}".format(server, program),
+                    params={"token": token},
+                    json={"records": messages})
+        self.slock.release()
+
+
+GLOBAL_SERVER_MANAGER = ServerManager()
+
+
 def send_records(
         records, server="http://localhost:8000", program=0, api_token=None):
     """Send records to a server; non-blocking.
@@ -32,12 +72,8 @@ def send_records(
         record if type(record) == dict else record.dict()
         for record in records]
 
-    def f():
-        requests.post(
-            "{}/api/records/new/{}".format(server, program),
-            params={"token": api_token}, json={"records": records_cvt})
-
-    threading.Thread(target=f).start()
+    GLOBAL_SERVER_MANAGER.send_records(
+        records_cvt, (api_token, server, program))
 
 
 class Record:

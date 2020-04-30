@@ -25,9 +25,9 @@
 
 
 {% block content %}
+<script src="/static/icons.js"></script>
 <script src="/static/api.js"></script>
 <script src="/static/util.js"></script>
-<script src="/static/icons.js"></script>
 <script src="/static/program.js"></script>
 <script>
 
@@ -53,32 +53,39 @@ function tmp(data, id) {
 
 <div class="content-intro"><div><div>
 
-{% if user.is_authenticated %}
 	<h2>Tokens</h2>
+	{% if user.is_authenticated %}
 
-	<div class="token-table">
+	<div class="token-table" id='user-token-table'>
 		{% for token in tokens %}
-		<div class="controls">
+		<div class="controls" id="{{token.api_token}}-controls">
 			<button class="button-icon" onclick="deleteToken('{{token.api_token}}');"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"><path d="M6 19c0 1.1.9 2 2 2h8c1.1 0 2-.9 2-2V7H6v12zM19 4h-3.5l-1-1h-5l-1 1H5v2h14V4z"/><path d="M0 0h24v24H0z" fill="none"/></svg></button>
 			{{token.desc}}
 		</div>
-		<div class="token">
+		<div class="token" id="{{token.api_token}}-token">
 			<div>API</div>
 			<div>{{token.api_token}}</div>
 		</div>
 		{% endfor %}
+		</div>
+	</div>
+	<div class="token-table">
 		<div class="controls">
 			<button class="button-icon" onclick="addToken('new-token');">
 				<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"><path d="M0 0h24v24H0z" fill="none"/><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm5 11h-4v4h-2v-4H7v-2h4V7h2v4h4v2z"/></svg>
 			</button>
-			<input type="text" id="new-token"></input>
-		</div>
+		<input type="text" id="new-token"></input>
 	</div>
+
+	{% else %}
+	Log in to create user API tokens.
+	{% endif %}
 
 	<h2>Programs</h2>
 
 	<div class="token-table">
-	{% for program in programs %}
+		{% if user.is_authenticated %}
+		{% for program in programs %}
 		<div class="controls">
 			<button class="button-icon" onclick="deleteProgram('{{program.id}}','{{program.api_token}}');"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"><path d="M6 19c0 1.1.9 2 2 2h8c1.1 0 2-.9 2-2V7H6v12zM19 4h-3.5l-1-1h-5l-1 1H5v2h14V4z"/><path d="M0 0h24v24H0z" fill="none"/></svg></button>
 			{{token.desc}}
@@ -93,9 +100,17 @@ function tmp(data, id) {
 			<div>API</div>
 			<div>{{program.api_token}}</div>
 		</div>
-	{% endfor %}
+		{% endfor %}
+		{% endif %}
+
+		<div class="controls">
+			<button class="button-icon" onclick="">
+				<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"><path d="M0 0h24v24H0z" fill="none"/><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm5 11h-4v4h-2v-4H7v-2h4V7h2v4h4v2z"/></svg>
+			</button>
+			<input type="text" id="new-token"></input>
+		</div>
+
 	</div>
-{% endif %}
 
 
 

@@ -5,7 +5,7 @@ import secrets
 from django.core.exceptions import ObjectDoesNotExist
 
 from .models import UserToken
-from .util import json_response
+from .util import json_response, serialize_objects
 
 
 @json_response
@@ -59,9 +59,49 @@ def new(request):
     if not request.user.is_authenticated:
         return {"error": "action requires authenticated user"}, 405
 
-    UserToken.objects.create(
+    token_new = UserToken.objects.create(
         owner=request.user,
         api_token=secrets.token_urlsafe(48),
         desc=request.GET.get('desc', 'New Token'))
 
-    return {"success": []}, 200
+    return {
+        "success": [],
+        "api_token": token_new.api_token,
+        "desc": token_new.desc
+    }, 200
+
+
+@json_response
+def list(request):
+    """list user tokens.
+
+    Parameters
+    ----------
+    request : Django request
+        Must have authenticated user (no API access)
+
+    Returns
+    -------
+    JsonResponse
+        List of tokens:
+        {
+            "tokens": [
+                {
+                    "name": <str>,
+                    "token": <str>
+                }
+            ]
+        }
+    """
+
+    # Check user
+    if not request.user.is_authenticated:
+        return {
+            "error": "action requires authenticated user", "tokens": []
+        }, 405
+
+    return {
+        "tokens": serialize_objects(
+            UserToken.objects.filter(owner=request.user),
+            ['api_token', 'desc'])
+    }
